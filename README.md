@@ -15,10 +15,9 @@ make test LSALIGN_SRC=/path/to/src         # 指向其他源码树
 
 ```
 <工作区>/
-├── LSalign_src20180916/            # 被测源码（含 example/）
+├── LSalign_src20180916/            # 被测源码
 └── LSalign-refactor-tests-framework/
-    ├── example/                    # 测试输入（ace_ligands.mol2, xtal-lig.mol2）
-    └── tests/                      # 本框架
+    └── tests/                      # 本框架（含全部测试数据）
 ```
 
 ## 快速开始
@@ -36,6 +35,18 @@ make output-diff CASES=baseline
 
 详细说明见 [`tests/README.md`](tests/README.md) 与
 [`tests/output_diff/README.md`](tests/output_diff/README.md)。
+
+## 测试数据布局
+
+数据按测试类别就近存放，被多个类别共用的文件集中在 `data/shared/`：
+
+```
+tests/
+├── data/shared/      # 共用：self, copy, octane, tiny, ace_ligands, xtal-lig ...
+├── unit/data/        # 仅 unit 使用：weird_cols, r3_*, chain_c13 ...
+├── cli/data/         # 仅 cli 使用：bad_*, nan_*
+└── output_diff/data/ # 仅 output_diff 使用：shorter.mol2
+```
 
 ## 两份用例清单
 

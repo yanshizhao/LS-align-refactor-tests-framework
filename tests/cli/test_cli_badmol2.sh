@@ -8,10 +8,10 @@
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 echo "== CLI: isolated atom does not crash (B16) =="
-assert_alive "E: isolated_atom x self" "${FIX}/isolated_atom.mol2" "${FIX}/self.mol2" -rf 0
+assert_alive "E: isolated_atom x self" "${SHARED}/isolated_atom.mol2" "${SHARED}/self.mol2" -rf 0
 
 echo "== CLI: zero-atom ligand does not crash (B24) =="
-assert_alive "F: empty_ligand x self" "${FIX}/empty_ligand.mol2" "${FIX}/self.mol2" -rf 0
+assert_alive "F: empty_ligand x self" "${SHARED}/empty_ligand.mol2" "${SHARED}/self.mol2" -rf 0
 
 # ---------------------------------------------------------------------------
 # A/B: malformed mol2 must be rejected with a diagnostic, not crash.
@@ -28,7 +28,7 @@ short_line="$(awk '
     /^@<TRIPOS>/     { inatom=0 }
     inatom && length($0) > 0 && length($0) < 48 { print NR; exit }
 ' "${FIX}/bad_short_atom.mol2")"
-run_ls_capture a_out a_err "${FIX}/bad_short_atom.mol2" "${FIX}/self.mol2" -rf 0
+run_ls_capture a_out a_err "${FIX}/bad_short_atom.mol2" "${SHARED}/self.mol2" -rf 0
 if printf '%s' "${a_err}" | grep -q "ATOM record too short"; then
     ok "A: stderr reports 'ATOM record too short'"
 else
@@ -54,7 +54,7 @@ bond_line="$(awk '
     inatom && $0 !~ /^[ \t]*$/ { natoms++ }
     inbond && NF >= 4 && ($2+0 > natoms || $3+0 > natoms) { print NR; exit }
 ' "${FIX}/bad_bond_index.mol2")"
-run_ls_capture b_out b_err "${FIX}/bad_bond_index.mol2" "${FIX}/self.mol2" -rf 0
+run_ls_capture b_out b_err "${FIX}/bad_bond_index.mol2" "${SHARED}/self.mol2" -rf 0
 if printf '%s' "${b_err}" | grep -q "BOND record refers to atom index out of range"; then
     ok "B: stderr reports 'BOND record refers to atom index out of range'"
 else
@@ -79,7 +79,7 @@ assert_eq "B: no data rows on stdout" "$(data_rows "${b_out}")" "0"
 # ---------------------------------------------------------------------------
 echo "== CLI: zero-atom ligand column values (B24) =="
 c_out_f="$(mktemp)"; c_err_f="$(mktemp)"
-"${BIN}" "${FIX}/empty_ligand.mol2" "${FIX}/self.mol2" -rf 0 >"${c_out_f}" 2>"${c_err_f}"
+"${BIN}" "${SHARED}/empty_ligand.mol2" "${SHARED}/self.mol2" -rf 0 >"${c_out_f}" 2>"${c_err_f}"
 c_rc=$?
 c_row="$(awk '$1=="EMPTYLIG" {print $3, $4, $5, $6, $7, $8; exit}' "${c_out_f}")"
 c_err="$(cat "${c_err_f}")"

@@ -5,7 +5,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TESTS_DIR="$(cd "${HERE}/.." && pwd)"
 BIN="${TESTS_DIR}/build/LSalign_under_test"
-EX="${TESTS_DIR}/../example"
+EX="${TESTS_DIR}/data/shared"
 G="${TESTS_DIR}/golden"
 TMPD="$(mktemp -d)"
 rc=0
@@ -34,7 +34,7 @@ fi
 
 check_one "${G}/ace_rigid.txt"  "ace_ligands x xtal-lig (-rf 0)" "${EX}/ace_ligands.mol2" "${EX}/xtal-lig.mol2" -rf 0
 if [ -f "${G}/self_copy.txt" ]; then
-    check_one "${G}/self_copy.txt" "self x copy (-rf 0)" "${TESTS_DIR}/fixtures/self.mol2" "${TESTS_DIR}/fixtures/copy.mol2" -rf 0
+    check_one "${G}/self_copy.txt" "self x copy (-rf 0)" "${EX}/self.mol2" "${EX}/copy.mol2" -rf 0
 fi
 
 rm -rf "${TMPD}"

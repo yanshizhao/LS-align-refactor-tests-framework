@@ -7,8 +7,10 @@
 
 TESTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BIN="${LSALIGN_BIN:-${TESTS_DIR}/build/LSalign_under_test}"
-EX="${TESTS_DIR}/../example"
-FIX="${TESTS_DIR}/fixtures"
+# Data layout: data/shared/ for files also used by unit/golden/output_diff,
+# cli/data/ for the CLI-only malformed inputs.
+SHARED="${TESTS_DIR}/data/shared"
+FIX="${TESTS_DIR}/cli/data"
 
 CLI_PASS=0
 CLI_FAIL=0

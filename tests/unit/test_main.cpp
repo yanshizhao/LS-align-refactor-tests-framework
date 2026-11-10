@@ -6,7 +6,7 @@
  * NOT include LSalign.cpp, because that file owns main(); the headers are all
  * header-only, so nothing else is needed.
  *
- * Run from the tests/ directory (fixtures/ paths are relative to it).
+ * Run from the tests/ directory (data paths are relative to it).
  */
 
 #include "mini_test.h"

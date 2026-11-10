@@ -9,7 +9,7 @@
  * so getLSscore8QuerySize() == sum/Nq -> ~1.0. */
 
 TEST(rigid_self_alignment_scores_one) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     RigidLSalign ali(ligs[0], ligs[0], 2.0);
     CHECK_CLOSE(ali.getLSscore8QuerySize(), 1.0, 1e-3);
     CHECK_CLOSE(ali.getLSscore8TemplSize(), 1.0, 1e-3);
@@ -19,8 +19,8 @@ TEST(rigid_self_alignment_scores_one) {
 
 TEST(rigid_transform_invariance) {
     /* copy.mol2 is self.mol2 rigidly rotated+translated -> still PC ~ 1.0 */
-    Ligands a("fixtures/self.mol2", false);
-    Ligands b("fixtures/copy.mol2", false);
+    Ligands a("data/shared/self.mol2", false);
+    Ligands b("data/shared/copy.mol2", false);
     RigidLSalign ali(a[0], b[0], 2.0);
     CHECK_CLOSE(ali.getLSscore8QuerySize(), 1.0, 1e-3);
     CHECK_CLOSE(ali.getJaccardRatio(), 1.0, 1e-3);
@@ -32,8 +32,8 @@ TEST(rigid_ace_example_matches_paper_band) {
      * The paper reports an alignment of ~13 pairs, RMSD ~= 0.44 A, LS-score ~= 0.62.
      * We assert loose bands because the shipped CLI metrics differ (RMSD_lb is a
      * lower-bound RMSD, not the aligned RMSD; PC-score8Q is size-normalised). */
-    Ligands q("../example/ace_ligands.mol2", false);
-    Ligands t("../example/xtal-lig.mol2", false);
+    Ligands q("data/shared/ace_ligands.mol2", false);
+    Ligands t("data/shared/xtal-lig.mol2", false);
     CHECK(q.size() == 49);
     CHECK(t.size() == 1);
 
@@ -55,8 +55,8 @@ TEST(rigid_ace_example_matches_paper_band) {
 
 /* ---- F12: toStrVec() divided by max(Nq,Nt) with no zero guard ---- */
 TEST(f12_tostrvec_no_nan_on_empty_ligands) {
-    Ligands a("fixtures/empty_ligand.mol2", false);
-    Ligands b("fixtures/empty_ligand.mol2", false);
+    Ligands a("data/shared/empty_ligand.mol2", false);
+    Ligands b("data/shared/empty_ligand.mol2", false);
     RigidLSalign ali(a[0], b[0], 0.1);
     std::vector<std::string> lines = ali.toStrVec();
     CHECK(lines.size() >= 3);

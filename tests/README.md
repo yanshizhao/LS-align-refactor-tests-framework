@@ -35,6 +35,21 @@ override with `LSALIGN_DATASET`):
 bash dataset_tools/audit_ace.sh ace 200
 ```
 
+## Test data layout
+
+Data lives next to the tests that use it; files shared by several suites are in
+`data/shared/`:
+
+| Directory | Contents |
+|---|---|
+| `data/shared/` | Shared by unit/cli/golden/output_diff (self, copy, octane, tiny, ace_ligands, xtal-lig, ...) |
+| `unit/data/` | Unit-only fixtures (weird_cols, weird_tokens, r3_*, chain_c13, ...) |
+| `cli/data/` | CLI-only malformed inputs (bad_*, nan_*) |
+| `output_diff/data/` | output_diff-only data (shorter.mol2) |
+| `golden/` | Committed expected outputs (not inputs) |
+
+All paths are relative to `tests/`; the test binary is always run from there.
+
 ## Environment notes (this machine)
 
 - Dynamic `libstdc++` linking is **broken** here: always pass

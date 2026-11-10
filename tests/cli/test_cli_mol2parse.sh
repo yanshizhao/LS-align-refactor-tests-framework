@@ -8,7 +8,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 TMPD="$(mktemp -d)"
 
 echo "== CLI: -o writes atom names and element columns (B29) =="
-run_ls "${EX}/xtal-lig.mol2" "${FIX}/self.mol2" -rf 0 -o "${TMPD}/sup.pdb" >/dev/null
+run_ls "${SHARED}/xtal-lig.mol2" "${SHARED}/self.mol2" -rf 0 -o "${TMPD}/sup.pdb" >/dev/null
 first="$(grep -m1 '^HETATM' "${TMPD}/sup.pdb")"
 assert_eq "P: first atom name (13-16)" "$(printf '%s' "${first}" | cut -c13-16)" " O1 "
 assert_eq "P: first element (77-78)"   "$(printf '%s' "${first}" | cut -c77-78)" " O"
@@ -17,7 +17,7 @@ assert_eq "P: every HETATM has a name" \
     "$(grep '^HETATM' "${TMPD}/sup.pdb" | awk 'substr($0,13,4) ~ /^[ ]*$/ {n++} END{print n+0}')" "0"
 
 echo "== CLI: unparseable ATOM record is rejected (F5) =="
-run_ls_capture q_out q_err "${FIX}/bad_atom_coords.mol2" "${FIX}/self.mol2" -rf 0
+run_ls_capture q_out q_err "${FIX}/bad_atom_coords.mol2" "${SHARED}/self.mol2" -rf 0
 if [ "${RC}" -ne 0 ]; then
     ok "Q: exit code ${RC} (nonzero)"
 else
@@ -32,7 +32,7 @@ assert_eq "Q: no data rows on stdout" \
     "$(printf '%s\n' "${q_out}" | awk 'NR>2 && $3 ~ /^[0-9]+\.[0-9]+$/ {n++} END{print n+0}')" "0"
 
 echo "== CLI: unknown extension falls back to mol2 (F5) =="
-run_ls_capture r_out r_err "${FIX}/self.pdb" "${FIX}/self.mol2" -rf 0
+run_ls_capture r_out r_err "${SHARED}/self.pdb" "${SHARED}/self.mol2" -rf 0
 assert_eq "R: exit 0 (fallback parsed)" "${RC}" "0"
 if printf '%s' "${r_err}" | grep -q "unsupported file extension"; then
     ok "R: stderr reports 'unsupported file extension'"

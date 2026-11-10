@@ -19,6 +19,7 @@
 output_diff/
 ├── baseline_cases.txt   # 用例清单（原始上游基线）：name | workdir | args | mode
 ├── regression_cases.txt # 用例清单（修复后回归线，默认）
+├── data/              # 本用例独有数据（shorter.mol2）；共用数据在 ../data/shared/
 ├── output_diff.py     # runner（Python；剥离时序行 + 归一化 + 按流分类比对）
 ├── baseline/          # 黄金标准输出（提交进 git，不可随意改）
 │   ├── <name>.out     #   stdout：表头 + 数据行 + 计时

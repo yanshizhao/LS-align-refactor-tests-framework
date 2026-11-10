@@ -31,7 +31,7 @@
  * getAtomBondTypes() cannot detect a stale cache when the atom count is
  * unchanged, so only the clear itself guarantees freshness. */
 TEST(f11_atom_bond_types_cleared_on_setpoints) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     Ligand L = ligs[0];
     CHECK(L.size() == 6);
     CHECK(L.atomBondTypes.empty());          /* nothing built yet */
@@ -54,7 +54,7 @@ TEST(f11_atom_bond_types_cleared_on_setpoints) {
  * longer new list walks past the end of the old matrix and corrupts the heap
  * (measured: exit 127 under -D_GLIBCXX_ASSERTIONS). */
 TEST(f11_resetcaches_ordering_with_growing_points) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     Ligand L = ligs[0];
     CHECK(L.size() == 6);
     CHECK(L.getBondDistMtx() != NULL);       /* build the 6x6 cache */

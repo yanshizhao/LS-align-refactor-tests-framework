@@ -24,7 +24,7 @@
 
 /* ---- Bug: Ligand::operator= does not clear points() -> accumulates ---- */
 TEST(ligand_operator_assign_does_not_accumulate) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     Ligand b;                 /* default ctor */
     b = ligs[0];              /* operator= #1 */
     b = ligs[0];              /* operator= #2 */
@@ -34,7 +34,7 @@ TEST(ligand_operator_assign_does_not_accumulate) {
 
 /* ---- Bug: DijkstraSRoad leaks the 'flag' array on every getRoad() ---- */
 TEST(leak_dijkstra_flag_array) {
-    Ligands ligs("fixtures/octane.mol2", false);
+    Ligands ligs("data/shared/octane.mol2", false);
     Ligand L = ligs[0];
     /* warm up lazy allocations (locale, iostream) outside the measured scope */
     { std::vector<std::vector<BondType> > warm = L.getAtomBondTypes(); (void)warm; }
@@ -49,8 +49,8 @@ TEST(leak_dijkstra_flag_array) {
 
 /* ---- Bug: RigidLSalign destructor never frees p_AliInfo (inverted test) ---- */
 TEST(leak_rigid_lsalign) {
-    Ligands a("fixtures/self.mol2", false);
-    Ligands b("fixtures/copy.mol2", false);
+    Ligands a("data/shared/self.mol2", false);
+    Ligands b("data/shared/copy.mol2", false);
     { LeakDelta warm; { RigidLSalign t(a[0], b[0], 2.0); (void)t; } (void)warm; }
     LeakDelta d;
     { RigidLSalign ali(a[0], b[0], 2.0); (void)ali.getLSscore8QuerySize(); }
@@ -60,8 +60,8 @@ TEST(leak_rigid_lsalign) {
 
 /* ---- Bug: FlexibleLSalign::align() leaks non-winning rotamer objects ---- */
 TEST(leak_flexible_lsalign_align) {
-    Ligands q("fixtures/octane.mol2", false);
-    Ligands t("fixtures/self.mol2", false);
+    Ligands q("data/shared/octane.mol2", false);
+    Ligands t("data/shared/self.mol2", false);
     { LeakDelta warm; { FlexibleLSalign f(q[0], t[0], 2.0, false, false, false); RigidLSalign* p = f.align(10); delete p; } (void)warm; }
     LeakDelta d;
     {
@@ -78,8 +78,8 @@ TEST(aligned_rmsd_nan_when_no_pairs) {
     /* tiny x unrelatedB: d0 clamps to 0.1 A, so finalAlignedPair is empty and
      * the RMSD computation is 0/0.  (R1 makes unrelatedA x unrelatedB keep one
      * pair at this d0, so it can no longer serve as the empty fixture.) */
-    Ligands a("fixtures/tiny.mol2", false);
-    Ligands b("fixtures/unrelatedB.mol2", false);
+    Ligands a("data/shared/tiny.mol2", false);
+    Ligands b("data/shared/unrelatedB.mol2", false);
     RigidLSalign ali(a[0], b[0], 0.1);
     double r = ali.getAlignedRMSD();
     /* correct behaviour: a defined (finite) value, not NaN */

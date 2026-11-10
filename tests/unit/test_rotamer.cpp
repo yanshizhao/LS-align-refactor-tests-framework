@@ -19,15 +19,15 @@
  * an initial rigid alignment with no aligned pairs reproduces that exactly
  * (every single bond stays in the rotation set). */
 static RigidLSalign emptyRigidAlignment() {
-    Ligands a("fixtures/tiny.mol2", false);
-    Ligands b("fixtures/unrelatedB.mol2", false);
+    Ligands a("data/shared/tiny.mol2", false);
+    Ligands b("data/shared/unrelatedB.mol2", false);
     std::vector<Ligand> av = a.getLigands();
     std::vector<Ligand> bv = b.getLigands();
     return RigidLSalign(av[0], bv[0], 0.1);
 }
 
 TEST(rotamer_generation_nonempty_and_size_preserved) {
-    Ligands ligs("fixtures/octane.mol2", false);
+    Ligands ligs("data/shared/octane.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     CHECK(L.size() == 8);
@@ -48,7 +48,7 @@ TEST(rotamer_generation_nonempty_and_size_preserved) {
 
 TEST(shortestroad_longest_path_on_octane) {
     /* The longest shortest-path in a linear chain of 8 atoms has 8 nodes. */
-    Ligands ligs("fixtures/octane.mol2", false);
+    Ligands ligs("data/shared/octane.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
 
@@ -73,7 +73,7 @@ TEST(shortestroad_longest_path_on_octane) {
  * candidate list itself (see b30_sorted_indices_ascending_cost).
  * This helper exposes the private sampler; it must never read out of range. */
 static std::vector<int> b26SelectC13(int N, int& bondCount) {
-    Ligands ligs("fixtures/chain_c13.mol2", false);
+    Ligands ligs("unit/data/chain_c13.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     LigRotamerDetector rd(all[0]);
     std::vector<BondInfo> singleBonds = rd.findAllSingleBond();
@@ -141,7 +141,7 @@ static int b30SmallSideCost(std::vector<std::vector<std::vector<int> > >& twoPar
 }
 
 TEST(b30_sorted_indices_ascending_cost) {
-    Ligands ligs("fixtures/chain_c13.mol2", false);
+    Ligands ligs("unit/data/chain_c13.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     LigRotamerDetector rd(all[0]);
     std::vector<BondInfo> singleBonds = rd.findAllSingleBond();
@@ -257,7 +257,7 @@ static Ligand b33MakeLigand(int n, const std::vector<BondInfo>& bonds) {
 /* B33: an unreachable pair must not be encoded as a direct edge.  Pre-fix the
  * path was the fake two-element [0, 3]; it now holds only the start atom. */
 TEST(b33_hop_unreachable_isolated) {
-    Ligands ligs("fixtures/isolated_atom.mol2", false);
+    Ligands ligs("data/shared/isolated_atom.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     int n = L.size();
@@ -284,7 +284,7 @@ TEST(b33_hop_unreachable_isolated) {
 
 /* B33: connected molecules keep the exact hop counts. */
 TEST(b33_hop_octane_connected) {
-    Ligands ligs("fixtures/octane.mol2", false);
+    Ligands ligs("data/shared/octane.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     int n = L.size();
@@ -362,7 +362,7 @@ TEST(b31_oversized_ligand_skipped_with_diagnostic) {
  * rejected (no published partition), no rotamers are generated and the old
  * data-loss diagnostic ERROR: 201702161138 is never printed. */
 TEST(b33_long_chain_isolated_no_rotamers_no_error) {
-    Ligands ligs("fixtures/long_chain_isolated.mol2", false);
+    Ligands ligs("unit/data/long_chain_isolated.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     CHECK(L.size() == 11);
@@ -457,7 +457,7 @@ static Ligand r4SubLigand(Ligand& src, int first, int last) {
  * the aligned core; fixed build -> singleBonds 4, 2 rotamers that move only
  * atoms 9-12, leaving every aligned atom (0..8) in place. */
 TEST(r4_aligned_bonds_are_removed) {
-    Ligands ligs("fixtures/chain_c13.mol2", false);
+    Ligands ligs("unit/data/chain_c13.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand q = all[0];
     CHECK(q.size() == 13);
@@ -489,7 +489,7 @@ TEST(r4_aligned_bonds_are_removed) {
  * atom below 5, so any motion there proves the half-aligned bond was kept.
  * The buggy build keeps all 9 bonds and yields 26 rotamers. */
 TEST(r4_half_aligned_bonds_are_kept) {
-    Ligands ligs("fixtures/chain_c13.mol2", false);
+    Ligands ligs("unit/data/chain_c13.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand src = all[0];
     CHECK(src.size() == 13);
@@ -552,7 +552,7 @@ static bool x1SameRotamerSets(const std::vector<Ligand>& a, const std::vector<Li
  * (11 + 9 = 20 angles -> 20^3 = 8000 > 5000).  The extension is a test-only
  * instrument; it does not claim the branch is publicly reachable. */
 TEST(x1_deterministic_decimation) {
-    Ligands ligs("fixtures/chain_c13.mol2", false);
+    Ligands ligs("unit/data/chain_c13.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand src = all[0];
     CHECK(src.size() == 13);
@@ -638,7 +638,7 @@ TEST(r30_sampler_rejects_short_two_parts_table) {
      * unreachable -- N is clamped to 3 and the early return handles
      * singleBonds.size() <= N, so size() is always >= 4 there.  It is kept as
      * defence in depth and is NOT covered here. */
-    Ligands ligs("fixtures/octane.mol2", false);
+    Ligands ligs("data/shared/octane.mol2", false);
     Ligand L = ligs[0];
     LigRotamerDetector rd(L);
 
@@ -666,7 +666,7 @@ TEST(r9_bond_hops) {
     CHECK(OVERLAP_RADIUS_RATIO == 0.8);
     CHECK(UNREACHABLE_HOPS == 999);
 
-    Ligands oct("fixtures/octane.mol2", false);
+    Ligands oct("data/shared/octane.mol2", false);
     Ligand O = oct.getLigands()[0];
     LigRotamerDetector rdo(O);
     CHECK(rdo.bondHops[0][1] == 1);
@@ -676,7 +676,7 @@ TEST(r9_bond_hops) {
     CHECK(rdo.bondHops[4][4] == 0);      /* self is 0, not the sentinel */
     CHECK(rdo.bondHops[3][7] == 4);
 
-    Ligands iso("fixtures/isolated_atom.mol2", false);
+    Ligands iso("data/shared/isolated_atom.mol2", false);
     Ligand I = iso.getLigands()[0];
     LigRotamerDetector rdi(I);
     CHECK(I.size() == 4);
@@ -715,7 +715,7 @@ static int r9FindLigand(const std::vector<Ligand>& all, const std::string& name)
  * guards against regressing to the "whole molecule killed" failure: measured
  * 10 surviving conformers out of 24 candidates. */
 TEST(r9_hydrogen_bond_ligand_keeps_rotamers) {
-    Ligands ligs("../example/ace_ligands.mol2", false);
+    Ligands ligs("data/shared/ace_ligands.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     int idx = r9FindLigand(all, "ZINC03814163");
     CHECK(idx >= 0);
@@ -788,7 +788,7 @@ static __attribute__((noinline, optimize("O1"))) void r9CompareAll(
  * (each usable bond x each non-zero angle: 824 conformers, measured).  Both
  * verdicts occur, so this is not a vacuous comparison. */
 TEST(r9_dropped_condition_is_equivalent) {
-    Ligands ligs("../example/ace_ligands.mol2", false);
+    Ligands ligs("data/shared/ace_ligands.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     CHECK(all.size() == 49);
 

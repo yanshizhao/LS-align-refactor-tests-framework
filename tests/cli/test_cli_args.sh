@@ -30,8 +30,8 @@ reject_case() {
     assert_eq "${label}: no stdout rows" "$(stdout_rows "${out_f}")" "0"
 }
 
-QFIX="${FIX}/self.mol2"
-TFIX="${FIX}/copy.mol2"
+QFIX="${SHARED}/self.mol2"
+TFIX="${SHARED}/copy.mol2"
 
 echo "== CLI: exit codes =="
 "${BIN}" "${QFIX}" "${TFIX}" -rf 0 >"${SCRATCH}/o" 2>/dev/null
@@ -80,7 +80,7 @@ reject_case "-oq abc"  "${QFIX}" "${TFIX}" -oq abc
 reject_case "-oq 999"  "${QFIX}" "${TFIX}" -oq 999
 reject_case "-ot 999"  "${QFIX}" "${TFIX}" -ot 999
 # -oq 999 with a real 49-ligand query file must name the count in the error.
-run_ls_capture oq_out oq_err -oq 999 "${EX}/ace_ligands.mol2" "${EX}/xtal-lig.mol2" -rf 0
+run_ls_capture oq_out oq_err -oq 999 "${SHARED}/ace_ligands.mol2" "${SHARED}/xtal-lig.mol2" -rf 0
 assert_eq "-oq 999 (49 ligands) exit 1" "${RC}" "1"
 if printf '%s' "${oq_err}" | grep -q "out of range (query file contains 49 ligand"; then
     ok "-oq 999 stderr states the ligand count"
@@ -90,12 +90,12 @@ fi
 assert_eq "-oq 999: no stdout rows" "$(printf '%s' "${oq_out}" | awk 'NR>2 && $3 ~ /^[0-9]+\.[0-9]+$/ {n++} END{print n+0}')" "0"
 
 echo "== CLI: in-range -oq/-ot still works =="
-"${BIN}" "${EX}/ace_ligands.mol2" "${EX}/xtal-lig.mol2" -oq 6 -ot 1 -rf 0 >"${SCRATCH}/o" 2>/dev/null
+"${BIN}" "${SHARED}/ace_ligands.mol2" "${SHARED}/xtal-lig.mol2" -oq 6 -ot 1 -rf 0 >"${SCRATCH}/o" 2>/dev/null
 assert_eq "-oq 6 -ot 1 exits 0" "$?" "0"
 assert_eq "-oq 6 -ot 1 emits one row" "$(stdout_rows "${SCRATCH}/o")" "1"
 
 echo "== CLI: diagnostics stay off stdout (B27) =="
-run_ls_capture diag_out diag_err "${FIX}/isolated_atom.mol2" "${FIX}/isolated_atom.mol2" -rf 0
+run_ls_capture diag_out diag_err "${SHARED}/isolated_atom.mol2" "${SHARED}/isolated_atom.mol2" -rf 0
 assert_eq "isolated x isolated exits 0" "${RC}" "0"
 if printf '%s' "${diag_out}" | grep -q "has a problem"; then
     bad "stdout contains 'has a problem'"

@@ -86,7 +86,7 @@ test: unit cli
 
 # --------------------------------------------------------------------------- #
 # White-box unit tests: a single TU that #includes the headers (NOT LSalign.cpp,
-# which owns main()).  fixtures/ and example paths are relative to tests/.
+# which owns main()).  data paths are relative to tests/.
 # --------------------------------------------------------------------------- #
 $(BUILD)/unit$(EXE): unit/test_main.cpp mini_test.h leak_probe.h $(SRC_HEADERS) $(TEST_SOURCES)
 	@mkdir -p $(BUILD)
@@ -145,8 +145,8 @@ asan: leakcheck
 # Golden regression (deterministic: rigid mode only on this fixture set)
 # --------------------------------------------------------------------------- #
 golden: $(BUILD)/LSalign_under_test$(EXE)
-	./$(BUILD)/LSalign_under_test ../example/ace_ligands.mol2 ../example/xtal-lig.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/ace_rigid.txt || true
-	./$(BUILD)/LSalign_under_test fixtures/self.mol2 fixtures/copy.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/self_copy.txt || true
+	./$(BUILD)/LSalign_under_test data/shared/ace_ligands.mol2 data/shared/xtal-lig.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/ace_rigid.txt || true
+	./$(BUILD)/LSalign_under_test data/shared/self.mol2 data/shared/copy.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/self_copy.txt || true
 	@echo "golden snapshots written (timing lines stripped)."
 
 check-golden: $(BUILD)/LSalign_under_test$(EXE)

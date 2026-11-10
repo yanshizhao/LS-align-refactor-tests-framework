@@ -49,7 +49,6 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 TESTS = HERE.parent
-EXAMPLES = TESTS.parent / "example"
 BIN = TESTS / "build" / ("LSalign_under_test.exe" if sys.platform.startswith("win") else "LSalign_under_test")
 BASELINE = HERE / "baseline"
 CURRENT = HERE / "current"
@@ -85,13 +84,13 @@ def writeText(path, text):
 
 
 def resolveWorkdir(rel):
-    """Resolve a case workdir: 'fixtures' etc. live under tests/; 'example' is
-    a sibling of tests/."""
-    candTests = (TESTS / rel).resolve()
-    if candTests.is_dir():
-        return candTests
-    candExample = (EXAMPLES if rel == "example" else TESTS.parent / rel).resolve()
-    return candExample
+    """Resolve a case workdir relative to tests/.  Every case now runs from
+    data/shared/ (see the case lists), so this is a plain join; the check keeps
+    a typo in cases.txt from silently running in the wrong directory."""
+    cand = (TESTS / rel).resolve()
+    if not cand.is_dir():
+        raise SystemExit(f"ERROR: case workdir does not exist: {cand}")
+    return cand
 
 
 def runCase(workdirRel, args, outPath, errPath):

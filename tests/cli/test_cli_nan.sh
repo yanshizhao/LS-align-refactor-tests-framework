@@ -10,7 +10,7 @@ data_rows() {   # $1 = stdout text
 }
 
 echo "== CLI: NaN coordinate is rejected (F2) =="
-run_ls_capture n_out n_err "${FIX}/nan_coord.mol2" "${FIX}/self.mol2" -rf 0
+run_ls_capture n_out n_err "${FIX}/nan_coord.mol2" "${SHARED}/self.mol2" -rf 0
 if [ "${RC}" -ne 0 ]; then
     ok "f2_nan_coord_exits: exit code ${RC} (nonzero)"
 else
@@ -29,7 +29,7 @@ fi
 assert_eq "f2_nan_coord_exits: no data rows on stdout" "$(data_rows "${n_out}")" "0"
 
 echo "== CLI: non-finite bond length is rejected (F2) =="
-run_ls_capture o_out o_err "${FIX}/nan_bond.mol2" "${FIX}/self.mol2" -rf 0
+run_ls_capture o_out o_err "${FIX}/nan_bond.mol2" "${SHARED}/self.mol2" -rf 0
 if [ "${RC}" -ne 0 ]; then
     ok "f2_nan_bond_exits: exit code ${RC} (nonzero)"
 else

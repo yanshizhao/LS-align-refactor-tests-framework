@@ -57,7 +57,7 @@ static void poisonTransform(RigidLSalign& ali) {
 }
 
 TEST(f14_ctor_identity) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
 
     RigidLSalign twoArg(ligs[0], ligs[0]);
     RigidLSalign threeArg(ligs[0], ligs[0], 2.0);
@@ -92,7 +92,7 @@ TEST(f14_ctor_identity) {
 
     /* every seed degenerates on a zero-atom query: the documented result is the
      * identity transform (the exact fixed value from the F14 behaviour table) */
-    Ligands empty("fixtures/empty_ligand.mol2", false);
+    Ligands empty("data/shared/empty_ligand.mol2", false);
     CHECK(empty.size() == 1);
     RigidLSalign emptyAli(empty[0], empty[0], 2.0);
     for (h = 0; h < 3; ++h) {
@@ -108,7 +108,7 @@ TEST(f14_ctor_identity) {
  * the caller's u/t untouched.  It must now return a non-NULL empty AlignInfo
  * (sco=0, len=0) and write u=I, t=0. */
 TEST(f4_empty_ali_returns_empty_aligninfo) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     RigidLSalign ali(ligs[0], ligs[0], 2.0);
 
     int h = 0, d = 0;
@@ -165,16 +165,16 @@ TEST(f4_empty_ali_returns_empty_aligninfo) {
  * empty (flexible mode degrades to the initial rigid result, i.e. -rf 1
  * behaves like -rf 0 on such input). */
 TEST(f4_select_rotamers_empty_init_returns_empty) {
-    Ligands q("fixtures/octane.mol2", false);
+    Ligands q("data/shared/octane.mol2", false);
     /* R4 fixed the aligned-bond filter: octane vs self removes all 7 bonds, so
      * its flexible set is now empty (measured 2 -> 0).  unrelatedA aligns only
      * 3 atoms, leaving 2 rotamers, which is what this case needs. */
-    Ligands t("fixtures/unrelatedA.mol2", false);
+    Ligands t("data/shared/unrelatedA.mol2", false);
     /* R1 changed the 4th seed, so unrelatedA x unrelatedB at d0=0.1 now keeps
      * one final pair.  tiny x unrelatedB still has none (both pre- and
      * post-R1), which is what this case needs. */
-    Ligands ua("fixtures/tiny.mol2", false);
-    Ligands ub("fixtures/unrelatedB.mol2", false);
+    Ligands ua("data/shared/tiny.mol2", false);
+    Ligands ub("data/shared/unrelatedB.mol2", false);
 
     FlexibleLSalign f(q[0], t[0], 2.0, false, false, false);
     CHECK(f.queryRotamers.size() == 2);
@@ -194,7 +194,7 @@ TEST(f4_select_rotamers_empty_init_returns_empty) {
  * deletes it through the normal chain.  After construction + one degenerate
  * call + destruction there must be no net live allocation. */
 TEST(f4_degenerate_alignment_frees_all) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     { LeakDelta warm; { RigidLSalign w(ligs[0], ligs[0], 2.0); (void)w.getLSscore8QuerySize(); } (void)warm; }
 
     LeakDelta d;
@@ -218,7 +218,7 @@ TEST(f4_degenerate_alignment_frees_all) {
  * also recorded as an aligned pair.  The geometry check must come first:
  * such a pair contributes nothing, is not recorded and is not counted. */
 TEST(f2_parse_final_ali_finite) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     RigidLSalign ali(ligs[0], ligs[0], 2.0);
 
     /* self vs self: all six atoms are aligned at distance 0 */
@@ -248,8 +248,8 @@ TEST(f2_parse_final_ali_finite) {
 /* F2: LSscoreFunc must keep the full query x templ matrix even when a pair's
  * distance is undefined; the distance term degrades to 0, never NaN. */
 TEST(f2_lsscore_mtx_no_nan) {
-    Ligands ligs("fixtures/self.mol2", false);
-    Ligands tiny("fixtures/tiny.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
+    Ligands tiny("data/shared/tiny.mol2", false);
     RigidLSalign ali(tiny[0], ligs[0], 2.0);
 
     double nanVal = std::numeric_limits<double>::quiet_NaN();
@@ -288,8 +288,8 @@ TEST(f2_lsscore_mtx_no_nan) {
  * matrix contains an undefined entry, and must still find the real extremes
  * among the good entries. */
 TEST(f2_three_special_points_no_nan) {
-    Ligands q("fixtures/octane.mol2", false);
-    Ligands t("fixtures/self.mol2", false);
+    Ligands q("data/shared/octane.mol2", false);
+    Ligands t("data/shared/self.mol2", false);
     FlexibleLSalign f(q[0], t[0], 2.0, false, false, false);
 
     double nanVal = std::numeric_limits<double>::quiet_NaN();
@@ -327,8 +327,8 @@ TEST(f2_three_special_points_no_nan) {
  * once.  Poisoning alisco/sco gives a deterministic observable: a re-parse
  * overwrites both with its own values. */
 TEST(p2_zero_pair_parses_once) {
-    Ligands a("fixtures/tiny.mol2", false);
-    Ligands b("fixtures/unrelatedB.mol2", false);
+    Ligands a("data/shared/tiny.mol2", false);
+    Ligands b("data/shared/unrelatedB.mol2", false);
     RigidLSalign ali(a[0], b[0], 0.1);
     /* tiny/unrelatedB with d0=0.1: EGS finds pairs, but none within d0 */
     CHECK(ali.m_isFinalParsed);
@@ -368,8 +368,8 @@ TEST(p2_zero_pair_parses_once) {
 /* P2: copying a settled object must copy the flag, otherwise the copy
  * re-parses an already-settled (possibly empty) result on first use. */
 TEST(p2_copy_preserves_flag) {
-    Ligands a("fixtures/tiny.mol2", false);
-    Ligands b("fixtures/unrelatedB.mol2", false);
+    Ligands a("data/shared/tiny.mol2", false);
+    Ligands b("data/shared/unrelatedB.mol2", false);
     RigidLSalign ali(a[0], b[0], 0.1);
     CHECK(ali.m_isFinalParsed);
     CHECK(ali.getFinalAlignedPair().empty());
@@ -394,7 +394,7 @@ TEST(p2_copy_preserves_flag) {
  * the fix a second call doubled both vectors (and the derived Jaccard ratio
  * silently changed), which is exactly the "wrong numbers, no crash" failure. */
 TEST(p2_parse_final_ali_info_is_idempotent) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     RigidLSalign ali(ligs[0], ligs[0], 2.0);          /* align() parsed once */
 
     const int n1 = (int)ali.finalAlignedPair.size();
@@ -422,7 +422,7 @@ TEST(p2_parse_final_ali_info_is_idempotent) {
  * align()'s detail pass.  align() is not reachable on a copy today, so the
  * copy is the only observable place; it must carry the source's value. */
 TEST(f9_detail_step_copied) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     RigidLSalign src(ligs[0], ligs[0], 2.0, 3, 7);
     CHECK(src.rough_sliding_step == 3);
     CHECK(src.detail_sliding_step == 7);
@@ -440,8 +440,8 @@ TEST(f9_detail_step_copied) {
  * with a NULL p_AliInfo, and every score accessor on it must return a safe
  * value instead of crashing. */
 TEST(f3_copy_null_safe) {
-    Ligands a("fixtures/tiny.mol2", false);
-    Ligands b("fixtures/unrelatedB.mol2", false);
+    Ligands a("data/shared/tiny.mol2", false);
+    Ligands b("data/shared/unrelatedB.mol2", false);
     RigidLSalign src(a[0], b[0], 0.1);
     CHECK(src.p_AliInfo != NULL);
     CHECK(src.getFinalAlignedPair().empty());
@@ -468,7 +468,7 @@ TEST(f3_copy_null_safe) {
  * point safe.  The object is unusable, so the guard leaves the parsed flag
  * alone (false): no false "already settled" state, no crash, scores are 0. */
 TEST(f3_accessors_null_safe) {
-    Ligands ligs("fixtures/self.mol2", false);
+    Ligands ligs("data/shared/self.mol2", false);
     RigidLSalign ali(ligs[0], ligs[0], 2.0);
 
     AlignInfo* saved = ali.p_AliInfo;
@@ -501,8 +501,8 @@ TEST(f3_accessors_null_safe) {
  * theoretical coverage match/min(G_A,G_B); two identical molecules cover the
  * full smaller bond-weight sum, so every search entry must be exactly 1.0. */
 TEST(r8_constant_matrix_uses_coverage) {
-    Ligands s("fixtures/self.mol2", false);
-    Ligands c("fixtures/copy.mol2", false);
+    Ligands s("data/shared/self.mol2", false);
+    Ligands c("data/shared/copy.mol2", false);
 
     RigidLSalign selfAli(s[0], s[0], 2.0);
     CHECK((int)selfAli.junBondInfoScoMtx.size() == (int)s[0].size());
@@ -528,8 +528,8 @@ TEST(r8_constant_matrix_uses_coverage) {
  * bond pair at 0.5: overlap 2.0, G_A = 23.6, G_B = 22.8.  The fallback must
  * yield 2.0/22.8 = 0.0877 (measured 2.0 before the fix, 0.0877 after), not 1.0. */
 TEST(r8_dissimilar_constant_matrix_uses_coverage) {
-    Ligands ar("fixtures/aromatic_ring.mol2", false);
-    Ligands am("fixtures/amide_ring.mol2", false);
+    Ligands ar("unit/data/aromatic_ring.mol2", false);
+    Ligands am("unit/data/amide_ring.mol2", false);
     RigidLSalign ali(ar[0], am[0], 2.0);
 
     CHECK((int)ali.junBondInfoScoMtx.size() == 6);
@@ -550,7 +550,7 @@ TEST(r8_dissimilar_constant_matrix_uses_coverage) {
 /* R8: a matrix with real spread keeps the original min-max path, bit for bit
  * (octane x octane measured: [0][0]=1/3, [0][1]=0, [1][1]=1). */
 TEST(r8_varying_matrix_still_minmax) {
-    Ligands o("fixtures/octane.mol2", false);
+    Ligands o("data/shared/octane.mol2", false);
     RigidLSalign ali(o[0], o[0], 2.0);
 
     CHECK_CLOSE(ali.junBondInfoScoMtx[0][0], 1.0 / 3.0, 1e-12);
@@ -571,7 +571,7 @@ TEST(r8_varying_matrix_still_minmax) {
 /* R8: min(G_A,G_B) == 0 (neither atom carries a bond) is defined as coverage
  * 1.0 -- "both have no bonds" is consistent, not zero similarity. */
 TEST(r8_zero_bond_coverage_is_one) {
-    Ligands s("fixtures/single_atom_templ.mol2", false);
+    Ligands s("unit/data/single_atom_templ.mol2", false);
     RigidLSalign ali(s[0], s[0], 2.0);
 
     CHECK((int)ali.junBondInfoScoMtx.size() == 1);
@@ -676,8 +676,8 @@ static double r1ReplayWithFourth(RigidLSalign& scratch, RigidLSalign& src,
  * multiscale search in the rough phase; the pre-R3 anchors (ZINC03814177) no
  * longer have a strict jun win under the wider search. */
 TEST(r1_fourth_seed_uses_jun_matrix) {
-    Ligands q("../example/ace_ligands.mol2", false);
-    Ligands t("../example/xtal-lig.mol2", false);
+    Ligands q("data/shared/ace_ligands.mol2", false);
+    Ligands t("data/shared/xtal-lig.mol2", false);
     int idx = -1;
     for (int i = 0; i < (int)q.size(); ++i) {
         if (q[i].getLigname() == "ZINC03814184") { idx = i; break; }
@@ -732,8 +732,8 @@ TEST(r1_fourth_seed_uses_jun_matrix) {
  * R3's multiscale rough search its 4th block no longer changes the result
  * (jun and bond replays both land on the shipped score). */
 TEST(r1_fourth_seed_differs_from_bond_on_ace) {
-    Ligands q("../example/ace_ligands.mol2", false);
-    Ligands t("../example/xtal-lig.mol2", false);
+    Ligands q("data/shared/ace_ligands.mol2", false);
+    Ligands t("data/shared/xtal-lig.mol2", false);
     int idx = -1;
     for (int i = 0; i < (int)q.size(); ++i) {
         if (q[i].getLigname() == "ZINC03814200") { idx = i; break; }
@@ -801,8 +801,8 @@ static long r3AllocsForWindows(RigidLSalign& ali, int nPairs, int maxWin) {
 }
 
 TEST(r3_window_list_grows_with_n_ali) {
-    Ligands q("fixtures/r3_query40.mol2", false);
-    Ligands t("fixtures/r3_templ40.mol2", false);
+    Ligands q("unit/data/r3_query40.mol2", false);
+    Ligands t("unit/data/r3_templ40.mol2", false);
     CHECK(q[0].size() == 40);
     CHECK(t[0].size() == 40);
     RigidLSalign ali(q[0], t[0], 2.0);
@@ -860,8 +860,8 @@ TEST(r3_window_list_grows_with_n_ali) {
  * widening the window list must never lower the winner.  Numbers measured on
  * ZINC01535869 x the ACE template at the CLI's default d0. */
 TEST(r3_more_windows_not_worse) {
-    Ligands q("../example/ace_ligands.mol2", false);
-    Ligands t("../example/xtal-lig.mol2", false);
+    Ligands q("data/shared/ace_ligands.mol2", false);
+    Ligands t("data/shared/xtal-lig.mol2", false);
     int idx = -1;
     for (int i = 0; i < (int)q.size(); ++i) {
         if (q[i].getLigname() == "ZINC01535869") { idx = i; break; }
