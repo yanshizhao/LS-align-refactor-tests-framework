@@ -17,12 +17,11 @@
 # Outputs land in ../../build/sampled/<target>/ (git-ignored working area).
 set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TESTS_DIR="$(cd "${HERE}/.." && pwd)"
-REPO_ROOT="$(cd "${TESTS_DIR}/.." && pwd)"
+REPO_ROOT="$(cd "${HERE}/.." && pwd)"
 
 DATASET="${LSALIGN_DATASET:-${REPO_ROOT}/../dataset}"
-BIN="${TESTS_DIR}/build/LSalign_under_test"
-WORK="${TESTS_DIR}/build/sampled"
+BIN="${REPO_ROOT}/build/LSalign_under_test"
+WORK="${REPO_ROOT}/build/sampled"
 
 TARGET="${1:-ace}"
 K="${2:-10}"

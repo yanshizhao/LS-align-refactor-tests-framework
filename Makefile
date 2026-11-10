@@ -15,8 +15,8 @@ CXX      := g++
 # external tree.  Point LSALIGN_SRC at its src/ directory:
 #   make test LSALIGN_SRC=/path/to/LSalign_src20180916/src
 # The default matches the layout this framework was split out of:
-#   <parent>/LSalign_src20180916/src  vs  <parent>/LSalign-refactor-tests-framework/tests
-LSALIGN_SRC ?= ../../LSalign_src20180916/src
+#   <parent>/LSalign_src20180916/src  vs  <parent>/LSalign-refactor-tests-framework/
+LSALIGN_SRC ?= ../LSalign_src20180916/src
 SRC      := $(LSALIGN_SRC)
 INCLUDE  := -I$(SRC) -I.
 STD      := -std=c++98            # shipping binary: fidelity to the original build
@@ -86,7 +86,7 @@ test: unit cli
 
 # --------------------------------------------------------------------------- #
 # White-box unit tests: a single TU that #includes the headers (NOT LSalign.cpp,
-# which owns main()).  data paths are relative to tests/.
+# which owns main()).  data paths are relative to the repository root.
 # --------------------------------------------------------------------------- #
 $(BUILD)/unit$(EXE): unit/test_main.cpp mini_test.h leak_probe.h $(SRC_HEADERS) $(TEST_SOURCES)
 	@mkdir -p $(BUILD)

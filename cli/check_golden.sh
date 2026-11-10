@@ -3,10 +3,10 @@
 # committed golden snapshots.  Deterministic: rigid mode (-rf 0) only.
 set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TESTS_DIR="$(cd "${HERE}/.." && pwd)"
-BIN="${TESTS_DIR}/build/LSalign_under_test"
-EX="${TESTS_DIR}/golden/data"
-G="${TESTS_DIR}/golden"
+REPO_ROOT="$(cd "${HERE}/.." && pwd)"
+BIN="${REPO_ROOT}/build/LSalign_under_test"
+EX="${REPO_ROOT}/golden/data"
+G="${REPO_ROOT}/golden"
 TMPD="$(mktemp -d)"
 rc=0
 

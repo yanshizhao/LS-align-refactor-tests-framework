@@ -5,10 +5,10 @@
 # parse stdout because the table is the contract; exit codes are covered
 # explicitly by test_cli_args.sh.
 
-TESTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BIN="${LSALIGN_BIN:-${TESTS_DIR}/build/LSalign_under_test}"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BIN="${LSALIGN_BIN:-${REPO_ROOT}/build/LSalign_under_test}"
 # All data used by the CLI suite lives in cli/data/ (each suite keeps its own copy).
-FIX="${TESTS_DIR}/cli/data"
+FIX="${REPO_ROOT}/cli/data"
 
 CLI_PASS=0
 CLI_FAIL=0

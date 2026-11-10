@@ -1,12 +1,12 @@
 # Build artifacts
-tests/build/
+build/
 *.exe
 *.o
 
 # output_diff run products (baseline/ and expected/ are committed;
 # current/ and diffs/ are not)
-tests/output_diff/current/
-tests/output_diff/diffs/
+output_diff/current/
+output_diff/diffs/
 
 # Python
 __pycache__/

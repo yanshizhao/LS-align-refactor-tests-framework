@@ -13,13 +13,12 @@
 # Requires the dataset; skipped cleanly if unavailable.
 set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TESTS_DIR="$(cd "${HERE}/.." && pwd)"
-REPO_ROOT="$(cd "${TESTS_DIR}/.." && pwd)"
+REPO_ROOT="$(cd "${HERE}/.." && pwd)"
 DATASET="${LSALIGN_DATASET:-${REPO_ROOT}/../dataset}"
 
 TARGET="${1:-ace}"
 K="${2:-200}"
-WORK="${TESTS_DIR}/build/sampled/${TARGET}_audit"
+WORK="${REPO_ROOT}/build/sampled/${TARGET}_audit"
 
 if [ ! -d "${DATASET}/${TARGET}" ]; then
     echo "SKIP: dataset target '${TARGET}' not found under ${DATASET}"
@@ -27,7 +26,7 @@ if [ ! -d "${DATASET}/${TARGET}" ]; then
 fi
 
 bash "${HERE}/sample.sh" "${TARGET}" "${K}" >/dev/null 2>&1 || { echo "SKIP: sample.sh failed"; exit 2; }
-SRC="${TESTS_DIR}/build/sampled/${TARGET}"
+SRC="${REPO_ROOT}/build/sampled/${TARGET}"
 
 # mean PC-score8T (col 4) over actives vs decoys (higher = more similar to crystal)
 mean_col4() { awk 'NR>2 && $4 ~ /^[0-9.]+$/ {s+=$4; n++} END{ if(n) printf "%.4f", s/n; else print "NA" }' "$1"; }

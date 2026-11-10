@@ -48,8 +48,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-TESTS = HERE.parent
-BIN = TESTS / "build" / ("LSalign_under_test.exe" if sys.platform.startswith("win") else "LSalign_under_test")
+REPO_ROOT = HERE.parent
+BIN = REPO_ROOT / "build" / ("LSalign_under_test.exe" if sys.platform.startswith("win") else "LSalign_under_test")
 BASELINE = HERE / "baseline"
 CURRENT = HERE / "current"
 DIFFS = HERE / "diffs"
@@ -78,16 +78,16 @@ def cleanText(text):
 
 def writeText(path, text):
     """Write UTF-8 with LF endings on every platform, so committed baselines
-    stay byte-identical between Windows and Linux runs (tests/** is LF)."""
+    stay byte-identical between Windows and Linux runs (the repo is LF)."""
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         handle.write(text)
 
 
 def resolveWorkdir(rel):
-    """Resolve a case workdir relative to tests/.  Every case runs from tests/
-    itself and names its data explicitly, so this is a plain join; the check
-    keeps a typo in the case list from silently running elsewhere."""
-    cand = (TESTS / rel).resolve()
+    """Resolve a case workdir relative to the repository root.  Every case runs
+    from the root itself and names its data explicitly, so this is a plain join;
+    the check keeps a typo in the case list from silently running elsewhere."""
+    cand = (REPO_ROOT / rel).resolve()
     if not cand.is_dir():
         raise SystemExit(f"ERROR: case workdir does not exist: {cand}")
     return cand
@@ -202,7 +202,7 @@ def main():
         i += 1
 
     if not BIN.exists():
-        print(f"ERROR: binary not found: {BIN}\nRun `make` in tests/ first.")
+        print(f"ERROR: binary not found: {BIN}\nRun `make` in the repository root first.")
         sys.exit(1)
     if not caseFile.exists():
         print(f"ERROR: case list not found: {caseFile}")

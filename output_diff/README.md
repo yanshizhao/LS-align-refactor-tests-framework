@@ -92,7 +92,7 @@ make output-baseline CASES=baseline
 
 - **剥离时序行**：`Using 0.003-s to load mol2 files.` / `Using 0.001-s to do LS-align.` / `Totally Using 0.004-s.`（数值每次不同）
 - **换行归一化**：`\r\n` / 单独 `\r` / 连续换行统一为 `\n`
-- **写入固定 LF**：`current/`、`baseline/`、`diffs/` 均以 `newline="\n"` 写出，Windows 与 Linux 跑出的 baseline 字节一致（与 `tests/**` 的 LF 约定相同）
+- **写入固定 LF**：`current/`、`baseline/`、`diffs/` 均以 `newline="\n"` 写出，Windows 与 Linux 跑出的 baseline 字节一致（与仓库的 LF 约定相同）
 - **两路独立归一化**：`.out` 与 `.err` 各自执行上述剥离/归一化后比对，互不影响
 - 路径前缀差异（workdir 不同）不体现在表体里，无需额外处理
 
