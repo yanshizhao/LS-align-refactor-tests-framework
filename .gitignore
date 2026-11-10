@@ -1,0 +1,22 @@
+# Build artifacts
+tests/build/
+*.exe
+*.o
+
+# output_diff run products (baseline/ and expected/ are committed;
+# current/ and diffs/ are not)
+tests/output_diff/current/
+tests/output_diff/diffs/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor temp files
+*~
+*.swp
+
+# The source tree under test is external; if someone checks it out here,
+# keep it out of this repository.
+LSalign_src20180916/
+LSalign_src/
