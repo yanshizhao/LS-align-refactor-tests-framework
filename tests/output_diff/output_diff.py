@@ -84,9 +84,9 @@ def writeText(path, text):
 
 
 def resolveWorkdir(rel):
-    """Resolve a case workdir relative to tests/.  Every case now runs from
-    data/shared/ (see the case lists), so this is a plain join; the check keeps
-    a typo in cases.txt from silently running in the wrong directory."""
+    """Resolve a case workdir relative to tests/.  Every case runs from tests/
+    itself and names its data explicitly, so this is a plain join; the check
+    keeps a typo in the case list from silently running elsewhere."""
     cand = (TESTS / rel).resolve()
     if not cand.is_dir():
         raise SystemExit(f"ERROR: case workdir does not exist: {cand}")

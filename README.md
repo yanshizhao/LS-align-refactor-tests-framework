@@ -38,15 +38,18 @@ make output-diff CASES=baseline
 
 ## 测试数据布局
 
-数据按测试类别就近存放，被多个类别共用的文件集中在 `data/shared/`：
+每个测试类别自带一份完整的所需数据，可单独运行或拷贝；被多个类别共用的
+文件（如 `self.mol2`）在每个类别目录下都有一份，这份重复是有意为之：
 
 ```
 tests/
-├── data/shared/      # 共用：self, copy, octane, tiny, ace_ligands, xtal-lig ...
-├── unit/data/        # 仅 unit 使用：weird_cols, r3_*, chain_c13 ...
-├── cli/data/         # 仅 cli 使用：bad_*, nan_*
-└── output_diff/data/ # 仅 output_diff 使用：shorter.mol2
+├── unit/data/        # unit 套件所需的全部数据（23 个）
+├── cli/data/         # cli 套件所需的全部数据，含坏输入（14 个）
+├── golden/data/      # 生成 golden 快照所用的输入（4 个）
+└── output_diff/data/ # output_diff 全部用例所需数据（10 个）
 ```
+
+修改共用输入时需同步修改所有使用它的类别目录，否则各套件会漂移。
 
 ## 两份用例清单
 

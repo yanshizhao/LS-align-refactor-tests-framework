@@ -27,7 +27,7 @@
 /* ---- B12 + B13: ShortestRoad frees int[1] with scalar delete ---- */
 TEST(no_delete_mismatch_shortestroad) {
     /* pre-fix: 65 mismatches on octane (64 x B13 in the n^2 loop + 1 x B12) */
-    Ligands ligs("data/shared/octane.mol2", false);
+    Ligands ligs("unit/data/octane.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
 
@@ -62,8 +62,8 @@ TEST(no_delete_mismatch_rotamer_c13) {
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
 
-    Ligands ta("data/shared/tiny.mol2", false);
-    Ligands tb("data/shared/unrelatedB.mol2", false);
+    Ligands ta("unit/data/tiny.mol2", false);
+    Ligands tb("unit/data/unrelatedB.mol2", false);
     std::vector<Ligand> tav = ta.getLigands();
     std::vector<Ligand> tbv = tb.getLigands();
     RigidLSalign rigid(tav[0], tbv[0], 0.1);
@@ -196,8 +196,8 @@ TEST(ligand_assign_no_accumulate) {
 TEST(ligand_copy_rebuilds_identical_atom_bond_types) {
     /* pre-fix: dst keeps octane's 8-atom cache and octane's 8 points, so
      * dst.size()==14 and atomBondTypes.size()==8 after dst = self[0]. */
-    Ligands octLigs("data/shared/octane.mol2", false);
-    Ligands selfLigs("data/shared/self.mol2", false);
+    Ligands octLigs("unit/data/octane.mol2", false);
+    Ligands selfLigs("unit/data/self.mol2", false);
     std::vector<Ligand> oct = octLigs.getLigands();
     std::vector<Ligand> self = selfLigs.getLigands();
 

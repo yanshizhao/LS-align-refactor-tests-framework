@@ -37,17 +37,19 @@ bash dataset_tools/audit_ace.sh ace 200
 
 ## Test data layout
 
-Data lives next to the tests that use it; files shared by several suites are in
-`data/shared/`:
+Each suite keeps its own complete copy of the data it needs, so a suite can be
+run or copied on its own. Files used by several suites exist in several of
+these directories (e.g. self.mol2); that duplication is intentional.
 
 | Directory | Contents |
 |---|---|
-| `data/shared/` | Shared by unit/cli/golden/output_diff (self, copy, octane, tiny, ace_ligands, xtal-lig, ...) |
-| `unit/data/` | Unit-only fixtures (weird_cols, weird_tokens, r3_*, chain_c13, ...) |
-| `cli/data/` | CLI-only malformed inputs (bad_*, nan_*) |
-| `output_diff/data/` | output_diff-only data (shorter.mol2) |
+| `unit/data/` | Everything the unit suite reads (23 files) |
+| `cli/data/` | Everything the CLI suite reads, incl. malformed inputs (14 files) |
+| `golden/data/` | Inputs that produced the committed golden snapshots (4 files) |
+| `output_diff/data/` | Everything the output_diff cases read (10 files) |
 | `golden/` | Committed expected outputs (not inputs) |
 
+Edit a shared input in every suite that uses it, or the suites will diverge.
 All paths are relative to `tests/`; the test binary is always run from there.
 
 ## Environment notes (this machine)

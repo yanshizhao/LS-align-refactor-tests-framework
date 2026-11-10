@@ -10,7 +10,7 @@
  * (fixed columns, atom type stripped to element symbols, H handling). */
 
 TEST(ligands_loads_single_fixture) {
-    Ligands ligs("data/shared/self.mol2", false);
+    Ligands ligs("unit/data/self.mol2", false);
     CHECK(ligs.size() == 1);
     CHECK(ligs[0].size() == 6);
     CHECK(ligs[0].getLigname() == "SELF");
@@ -32,14 +32,14 @@ TEST(ligands_atom_type_reduced_to_element) {
 }
 
 TEST(ligands_bond_count) {
-    Ligands ligs("data/shared/self.mol2", false);
+    Ligands ligs("unit/data/self.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     CHECK(all[0].getBondInfoes().size() == 6);
 }
 
 TEST(ligands_multiligand_file) {
     /* example/ace_ligands.mol2 has 49 ligands */
-    Ligands ligs("data/shared/ace_ligands.mol2", false);
+    Ligands ligs("unit/data/ace_ligands.mol2", false);
     CHECK(ligs.size() == 49);
     /* first ligand is ZINC01535869 with 29 heavy atoms (H dropped) */
     CHECK(ligs[0].getLigname() == "ZINC01535869");
@@ -47,9 +47,9 @@ TEST(ligands_multiligand_file) {
 
 TEST(ligands_hydrogens_dropped_by_default) {
     /* xtal-lig.mol2: 59 atoms incl. H -> 29 heavy atoms without H */
-    Ligands noH("data/shared/xtal-lig.mol2", false);
+    Ligands noH("unit/data/xtal-lig.mol2", false);
     CHECK(noH[0].size() == 29);
-    Ligands withH("data/shared/xtal-lig.mol2", true);
+    Ligands withH("unit/data/xtal-lig.mol2", true);
     CHECK(withH[0].size() == 59);
 }
 
@@ -57,7 +57,7 @@ TEST(ligands_hydrogens_dropped_by_default) {
 TEST(empty_ligand_from_parse_has_zero_atoms) {
     /* Parse only -- no alignment.  Before the fix this already did not crash,
      * so it is a plain TEST regression lock, not an XFAIL. */
-    Ligands ligs("data/shared/empty_ligand.mol2", false);
+    Ligands ligs("unit/data/empty_ligand.mol2", false);
     CHECK(ligs.size() == 1);
     CHECK(ligs[0].size() == 0);
     CHECK(ligs[0].getLigname() == "EMPTYLIG");
@@ -65,7 +65,7 @@ TEST(empty_ligand_from_parse_has_zero_atoms) {
 
 /* ---- F5: whitespace/tab separated ATOM records ---- */
 static void checkSameAsSelf(const char* fixture) {
-    Ligands fixed("data/shared/self.mol2", false);
+    Ligands fixed("unit/data/self.mol2", false);
     Ligands loose(fixture, false);
     std::vector<Ligand> a = fixed.getLigands();
     std::vector<Ligand> b = loose.getLigands();
@@ -89,9 +89,9 @@ TEST(ligands_tab_delimited_matches_fixed_columns) {
 }
 
 TEST(ligands_unknown_extension_falls_back_to_mol2) {
-    /* data/shared/self.pdb is a mol2 file with a misleading extension; the
+    /* unit/data/self.pdb is a mol2 file with a misleading extension; the
      * factory warns on stderr and still parses it as mol2. */
-    Ligands ligs("data/shared/self.pdb", false);
+    Ligands ligs("unit/data/self.pdb", false);
     CHECK(ligs.size() == 1);
     CHECK(ligs[0].size() == 6);
     CHECK(ligs[0].getLigname() == "SELF");
@@ -113,7 +113,7 @@ TEST(ligands_atom_names_preserved) {
 }
 
 TEST(ligands_atom_names_survive_copy_and_assign) {
-    Ligands ligs("data/shared/self.mol2", false);
+    Ligands ligs("unit/data/self.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand copy(all[0]);
     CHECK(copy.getAtomName(0) == "C1");
@@ -126,8 +126,8 @@ TEST(ligands_atom_names_survive_copy_and_assign) {
 }
 
 TEST(ligands_atom_names_dropped_with_hydrogens) {
-    Ligands withH("data/shared/xtal-lig.mol2", true);
-    Ligands noH("data/shared/xtal-lig.mol2", false);
+    Ligands withH("unit/data/xtal-lig.mol2", true);
+    Ligands noH("unit/data/xtal-lig.mol2", false);
     std::vector<Ligand> wh = withH.getLigands();
     std::vector<Ligand> nh = noH.getLigands();
     CHECK(wh[0].size() == 59);
@@ -172,7 +172,7 @@ TEST(pdb_atom_name_alignment_rules) {
 }
 
 TEST(pdb_all_thin_overloads_agree_on_names) {
-    Ligands ligs("data/shared/self.mol2", false);
+    Ligands ligs("unit/data/self.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     std::vector<std::string> a = L.format2PDB();
@@ -193,7 +193,7 @@ TEST(pdb_all_thin_overloads_agree_on_names) {
 
 /* ---- F6: a zero-atom ligand must not rebuild its lazy cache every call ---- */
 TEST(f6_empty_ligand_builds_once) {
-    Ligands ligs("data/shared/empty_ligand.mol2", false);
+    Ligands ligs("unit/data/empty_ligand.mol2", false);
     std::vector<Ligand> objs;
     objs.reserve(100);
     for (int k = 0; k < 100; ++k) objs.push_back(ligs[0]);
@@ -208,7 +208,7 @@ TEST(f6_empty_ligand_builds_once) {
 
 /* ---- F6: the getters hand out the stored vectors, not copies ---- */
 TEST(f6_const_ref_no_copy) {
-    Ligands ligs("data/shared/isolated_atom.mol2", false);
+    Ligands ligs("unit/data/isolated_atom.mol2", false);
     const Ligand& L = ligs[0];
     /* read-only getters are const-qualified and return references */
     CHECK(&L.getPoints() == &L.getPoints());
@@ -233,9 +233,9 @@ TEST(f6_const_ref_no_copy) {
 
 /* ---- F6: atomBondTypes.size() == points.size() even with isolated atoms ---- */
 TEST(f6_size_invariant) {
-    const char* fixtures[3] = {"data/shared/isolated_atom.mol2",
-                               "data/shared/empty_ligand.mol2",
-                               "data/shared/self.mol2"};
+    const char* fixtures[3] = {"unit/data/isolated_atom.mol2",
+                               "unit/data/empty_ligand.mol2",
+                               "unit/data/self.mol2"};
     for (int f = 0; f < 3; ++f) {
         Ligands ligs(fixtures[f], false);
         Ligand L = ligs[0];
@@ -246,7 +246,7 @@ TEST(f6_size_invariant) {
 
     /* isolated_atom.mol2: atoms 1-3 form a chain, atom 4 has no bond */
     {
-        Ligands iso("data/shared/isolated_atom.mol2", false);
+        Ligands iso("unit/data/isolated_atom.mol2", false);
         Ligand L = iso[0];
         const std::vector<std::vector<BondType> >& abt = L.getAtomBondTypes();
         CHECK(abt.size() == 4);
@@ -258,7 +258,7 @@ TEST(f6_size_invariant) {
 
 /* ---- F11: setPoints must drop the caches it invalidated ---- */
 TEST(f11_setpoints_invalidates_caches) {
-    Ligands ligs("data/shared/self.mol2", false);
+    Ligands ligs("unit/data/self.mol2", false);
     Ligand L = ligs[0];
 
     /* warm both lazy caches (bondDisMtx, btMtx and atomBondTypes) */
@@ -291,7 +291,7 @@ TEST(f11_setpoints_invalidates_caches) {
 
 /* ---- F15: bondDis follows the coordinates on a non-rigid setPoints ---- */
 TEST(f15_recompute_nonrigid) {
-    Ligands ligs("data/shared/self.mol2", false);
+    Ligands ligs("unit/data/self.mol2", false);
     Ligand L = ligs[0];
 
     std::vector<double> before;
@@ -323,7 +323,7 @@ TEST(f15_recompute_nonrigid) {
 
 /* ---- F15: a rigid transform leaves every bond length alone ---- */
 TEST(f15_rigid_unchanged) {
-    Ligands ligs("data/shared/self.mol2", false);
+    Ligands ligs("unit/data/self.mol2", false);
     Ligand L = ligs[0];
 
     std::vector<double> before;

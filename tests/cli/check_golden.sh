@@ -5,7 +5,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TESTS_DIR="$(cd "${HERE}/.." && pwd)"
 BIN="${TESTS_DIR}/build/LSalign_under_test"
-EX="${TESTS_DIR}/data/shared"
+EX="${TESTS_DIR}/golden/data"
 G="${TESTS_DIR}/golden"
 TMPD="$(mktemp -d)"
 rc=0

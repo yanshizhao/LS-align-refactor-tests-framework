@@ -19,15 +19,15 @@
  * an initial rigid alignment with no aligned pairs reproduces that exactly
  * (every single bond stays in the rotation set). */
 static RigidLSalign emptyRigidAlignment() {
-    Ligands a("data/shared/tiny.mol2", false);
-    Ligands b("data/shared/unrelatedB.mol2", false);
+    Ligands a("unit/data/tiny.mol2", false);
+    Ligands b("unit/data/unrelatedB.mol2", false);
     std::vector<Ligand> av = a.getLigands();
     std::vector<Ligand> bv = b.getLigands();
     return RigidLSalign(av[0], bv[0], 0.1);
 }
 
 TEST(rotamer_generation_nonempty_and_size_preserved) {
-    Ligands ligs("data/shared/octane.mol2", false);
+    Ligands ligs("unit/data/octane.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     CHECK(L.size() == 8);
@@ -48,7 +48,7 @@ TEST(rotamer_generation_nonempty_and_size_preserved) {
 
 TEST(shortestroad_longest_path_on_octane) {
     /* The longest shortest-path in a linear chain of 8 atoms has 8 nodes. */
-    Ligands ligs("data/shared/octane.mol2", false);
+    Ligands ligs("unit/data/octane.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
 
@@ -257,7 +257,7 @@ static Ligand b33MakeLigand(int n, const std::vector<BondInfo>& bonds) {
 /* B33: an unreachable pair must not be encoded as a direct edge.  Pre-fix the
  * path was the fake two-element [0, 3]; it now holds only the start atom. */
 TEST(b33_hop_unreachable_isolated) {
-    Ligands ligs("data/shared/isolated_atom.mol2", false);
+    Ligands ligs("unit/data/isolated_atom.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     int n = L.size();
@@ -284,7 +284,7 @@ TEST(b33_hop_unreachable_isolated) {
 
 /* B33: connected molecules keep the exact hop counts. */
 TEST(b33_hop_octane_connected) {
-    Ligands ligs("data/shared/octane.mol2", false);
+    Ligands ligs("unit/data/octane.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     Ligand L = all[0];
     int n = L.size();
@@ -638,7 +638,7 @@ TEST(r30_sampler_rejects_short_two_parts_table) {
      * unreachable -- N is clamped to 3 and the early return handles
      * singleBonds.size() <= N, so size() is always >= 4 there.  It is kept as
      * defence in depth and is NOT covered here. */
-    Ligands ligs("data/shared/octane.mol2", false);
+    Ligands ligs("unit/data/octane.mol2", false);
     Ligand L = ligs[0];
     LigRotamerDetector rd(L);
 
@@ -666,7 +666,7 @@ TEST(r9_bond_hops) {
     CHECK(OVERLAP_RADIUS_RATIO == 0.8);
     CHECK(UNREACHABLE_HOPS == 999);
 
-    Ligands oct("data/shared/octane.mol2", false);
+    Ligands oct("unit/data/octane.mol2", false);
     Ligand O = oct.getLigands()[0];
     LigRotamerDetector rdo(O);
     CHECK(rdo.bondHops[0][1] == 1);
@@ -676,7 +676,7 @@ TEST(r9_bond_hops) {
     CHECK(rdo.bondHops[4][4] == 0);      /* self is 0, not the sentinel */
     CHECK(rdo.bondHops[3][7] == 4);
 
-    Ligands iso("data/shared/isolated_atom.mol2", false);
+    Ligands iso("unit/data/isolated_atom.mol2", false);
     Ligand I = iso.getLigands()[0];
     LigRotamerDetector rdi(I);
     CHECK(I.size() == 4);
@@ -715,7 +715,7 @@ static int r9FindLigand(const std::vector<Ligand>& all, const std::string& name)
  * guards against regressing to the "whole molecule killed" failure: measured
  * 10 surviving conformers out of 24 candidates. */
 TEST(r9_hydrogen_bond_ligand_keeps_rotamers) {
-    Ligands ligs("data/shared/ace_ligands.mol2", false);
+    Ligands ligs("unit/data/ace_ligands.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     int idx = r9FindLigand(all, "ZINC03814163");
     CHECK(idx >= 0);
@@ -788,7 +788,7 @@ static __attribute__((noinline, optimize("O1"))) void r9CompareAll(
  * (each usable bond x each non-zero angle: 824 conformers, measured).  Both
  * verdicts occur, so this is not a vacuous comparison. */
 TEST(r9_dropped_condition_is_equivalent) {
-    Ligands ligs("data/shared/ace_ligands.mol2", false);
+    Ligands ligs("unit/data/ace_ligands.mol2", false);
     std::vector<Ligand> all = ligs.getLigands();
     CHECK(all.size() == 49);
 

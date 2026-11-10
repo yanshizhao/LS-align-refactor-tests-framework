@@ -9,22 +9,22 @@
 #   * stdout 与 stderr 分开记录、分开比对：baseline/<name>.out / .err，
 #     current/<name>.out / .err，差异分别落到 diffs/<name>.out.diff / .err.diff。
 #     因此诊断进 stderr（B27）后，结果表仍在 .out 里逐字节比对。
-#   * 数据位置：共用数据在 data/shared/，本用例独有数据在 output_diff/data/；
+#   * 数据位置：共用数据在 output_diff/data/，本用例独有数据在 output_diff/data/；
 #     args 里写相对 tests/ 的显式路径，从哪里取数据一眼可见。
 #   * 制动模式(-rf 0)确定性最好；柔性(-rf 1)含 rand() 抽样，仅在确定性可控时纳入。
 #
 # 格式： name                     workdir  args(相对 workdir)                                          mode
-ace_rigid                 .    data/shared/ace_ligands.mol2 data/shared/xtal-lig.mol2 -rf 0             exact
-self_copy                 .    data/shared/self.mol2 data/shared/copy.mol2 -rf 0                        exact
-octane_self               .    data/shared/octane.mol2 data/shared/self.mol2 -rf 0                      exact
-tiny_octane               .    data/shared/tiny.mol2 data/shared/octane.mol2 -rf 0                      exact
-shorter_octane            .    output_diff/data/shorter.mol2 data/shared/octane.mol2 -rf 0              exact
-unrelated                 .    data/shared/unrelatedA.mol2 data/shared/unrelatedB.mol2 -rf 0            exact
-octane_octane             .    data/shared/octane.mol2 data/shared/octane.mol2 -rf 0                    exact
-self_self                 .    data/shared/self.mol2 data/shared/self.mol2 -rf 0                        exact
-isolated_rigid            .    data/shared/isolated_atom.mol2 data/shared/tiny.mol2 -rf 0               exact
-ace_flex                  .    data/shared/ace_ligands.mol2 data/shared/xtal-lig.mol2 -rf 1             exact
-octane_flex               .    data/shared/octane.mol2 data/shared/self.mol2 -rf 1                      exact
+ace_rigid                 .    output_diff/data/ace_ligands.mol2 output_diff/data/xtal-lig.mol2 -rf 0             exact
+self_copy                 .    output_diff/data/self.mol2 output_diff/data/copy.mol2 -rf 0                        exact
+octane_self               .    output_diff/data/octane.mol2 output_diff/data/self.mol2 -rf 0                      exact
+tiny_octane               .    output_diff/data/tiny.mol2 output_diff/data/octane.mol2 -rf 0                      exact
+shorter_octane            .    output_diff/data/shorter.mol2 output_diff/data/octane.mol2 -rf 0              exact
+unrelated                 .    output_diff/data/unrelatedA.mol2 output_diff/data/unrelatedB.mol2 -rf 0            exact
+octane_octane             .    output_diff/data/octane.mol2 output_diff/data/octane.mol2 -rf 0                    exact
+self_self                 .    output_diff/data/self.mol2 output_diff/data/self.mol2 -rf 0                        exact
+isolated_rigid            .    output_diff/data/isolated_atom.mol2 output_diff/data/tiny.mol2 -rf 0               exact
+ace_flex                  .    output_diff/data/ace_ligands.mol2 output_diff/data/xtal-lig.mol2 -rf 1             exact
+octane_flex               .    output_diff/data/octane.mol2 output_diff/data/self.mol2 -rf 1                      exact
 
 # R 批（会改数值）用例：修复对应缺陷后，把 mode 从 exact 改为 expected:<key>，
 # 并在 expected/<key>.json 里登记"哪一行从什么值变成什么值"，然后重新生成 baseline。

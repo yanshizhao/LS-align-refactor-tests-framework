@@ -145,8 +145,8 @@ asan: leakcheck
 # Golden regression (deterministic: rigid mode only on this fixture set)
 # --------------------------------------------------------------------------- #
 golden: $(BUILD)/LSalign_under_test$(EXE)
-	./$(BUILD)/LSalign_under_test data/shared/ace_ligands.mol2 data/shared/xtal-lig.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/ace_rigid.txt || true
-	./$(BUILD)/LSalign_under_test data/shared/self.mol2 data/shared/copy.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/self_copy.txt || true
+	./$(BUILD)/LSalign_under_test golden/data/ace_ligands.mol2 golden/data/xtal-lig.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/ace_rigid.txt || true
+	./$(BUILD)/LSalign_under_test golden/data/self.mol2 golden/data/copy.mol2 -rf 0 2>/dev/null | grep -vE '^(Using|Totally Using) ' > golden/self_copy.txt || true
 	@echo "golden snapshots written (timing lines stripped)."
 
 check-golden: $(BUILD)/LSalign_under_test$(EXE)
