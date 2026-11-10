@@ -42,7 +42,8 @@ make output-diff CASES=baseline
 .
 ├── unit/data/        # unit 套件所需的全部数据（23 个）
 ├── cli/data/         # cli 套件所需的全部数据，含坏输入（14 个）
-├── golden/data/      # 生成 golden 快照所用的输入（4 个）
+├── golden/           # golden 快照 + 校验脚本 check_golden.sh
+│   └── data/         #   生成快照所用的输入（4 个）
 └── output_diff/data/ # output_diff 全部用例所需数据（10 个）
 ```
 

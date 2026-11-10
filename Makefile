@@ -150,7 +150,7 @@ golden: $(BUILD)/LSalign_under_test$(EXE)
 	@echo "golden snapshots written (timing lines stripped)."
 
 check-golden: $(BUILD)/LSalign_under_test$(EXE)
-	@bash cli/check_golden.sh
+	@bash golden/check_golden.sh
 
 # --------------------------------------------------------------------------- #
 # Full output-level regression (output_diff/): wider case set than golden/,
